@@ -13,7 +13,8 @@ fn empty_scope() {
 fn single_struct() {
     let mut scope = Scope::new();
 
-    scope.new_struct("Foo")
+    scope
+        .new_struct("Foo")
         .field("one", "usize")
         .field("two", "String");
 
@@ -30,12 +31,29 @@ struct Foo {
 fn struct_with_pushed_field() {
     let mut scope = Scope::new();
     let mut struct_ = Struct::new("Foo");
-    let mut field = Field::new("one", "usize");
+    let field = Field::new("one", "usize");
     struct_.push_field(field);
     scope.push_struct(struct_);
 
     let expect = r#"
 struct Foo {
+    one: usize,
+}"#;
+
+    assert_eq!(scope.to_string(), &expect[1..]);
+}
+
+#[test]
+fn struct_with_vis() {
+    let mut scope = Scope::new();
+    let mut struct_ = Struct::new("Foo");
+    struct_.vis("pub");
+    let field = Field::new("one", "usize");
+    struct_.push_field(field);
+    scope.push_struct(struct_);
+
+    let expect = r#"
+pub struct Foo {
     one: usize,
 }"#;
 
@@ -83,6 +101,23 @@ struct Foo {
 }
 
 #[test]
+fn struct_with_field_vis() {
+    let mut scope = Scope::new();
+    let mut struct_ = Struct::new("Foo");
+    let mut field = Field::new("one", "usize");
+    field.vis("pub");
+    struct_.push_field(field);
+    scope.push_struct(struct_);
+
+    let expect = r#"
+struct Foo {
+    pub one: usize,
+}"#;
+
+    assert_eq!(scope.to_string(), &expect[1..]);
+}
+
+#[test]
 fn empty_struct() {
     let mut scope = Scope::new();
 
@@ -98,12 +133,12 @@ struct Foo;"#;
 fn two_structs() {
     let mut scope = Scope::new();
 
-    scope.new_struct("Foo")
+    scope
+        .new_struct("Foo")
         .field("one", "usize")
         .field("two", "String");
 
-    scope.new_struct("Bar")
-        .field("hello", "World");
+    scope.new_struct("Bar").field("hello", "World");
 
     let expect = r#"
 struct Foo {
@@ -122,8 +157,10 @@ struct Bar {
 fn struct_with_derive() {
     let mut scope = Scope::new();
 
-    scope.new_struct("Foo")
-        .derive("Debug").derive("Clone")
+    scope
+        .new_struct("Foo")
+        .derive("Debug")
+        .derive("Clone")
         .field("one", "usize")
         .field("two", "String");
 
@@ -141,7 +178,8 @@ struct Foo {
 fn struct_with_generics_1() {
     let mut scope = Scope::new();
 
-    scope.new_struct("Foo")
+    scope
+        .new_struct("Foo")
         .generic("T")
         .generic("U")
         .field("one", "T")
@@ -160,7 +198,8 @@ struct Foo<T, U> {
 fn struct_with_generics_2() {
     let mut scope = Scope::new();
 
-    scope.new_struct("Foo")
+    scope
+        .new_struct("Foo")
         .generic("T, U")
         .field("one", "T")
         .field("two", "U");
@@ -178,7 +217,8 @@ struct Foo<T, U> {
 fn struct_with_generics_3() {
     let mut scope = Scope::new();
 
-    scope.new_struct("Foo")
+    scope
+        .new_struct("Foo")
         .generic("T: Win, U")
         .field("one", "T")
         .field("two", "U");
@@ -196,7 +236,8 @@ struct Foo<T: Win, U> {
 fn struct_where_clause_1() {
     let mut scope = Scope::new();
 
-    scope.new_struct("Foo")
+    scope
+        .new_struct("Foo")
         .generic("T")
         .bound("T", "Foo")
         .field("one", "T");
@@ -215,7 +256,8 @@ where T: Foo,
 fn struct_where_clause_2() {
     let mut scope = Scope::new();
 
-    scope.new_struct("Foo")
+    scope
+        .new_struct("Foo")
         .generic("T, U")
         .bound("T", "Foo")
         .bound("U", "Baz")
@@ -238,9 +280,12 @@ where T: Foo,
 fn struct_doc() {
     let mut scope = Scope::new();
 
-    scope.new_struct("Foo")
-        .doc("Hello, this is a doc string\n\
-              that continues on another line.")
+    scope
+        .new_struct("Foo")
+        .doc(
+            "Hello, this is a doc string\n\
+             that continues on another line.",
+        )
         .field("one", "T");
 
     let expect = r#"
@@ -259,15 +304,15 @@ fn struct_in_mod() {
 
     {
         let module = scope.new_module("foo");
-        module.new_struct("Foo")
+        module
+            .new_struct("Foo")
             .doc("Hello some docs")
             .derive("Debug")
             .generic("T, U")
             .bound("T", "SomeBound")
             .bound("U", "SomeOtherBound")
             .field("one", "T")
-            .field("two", "U")
-            ;
+            .field("two", "U");
     }
 
     let expect = r#"
@@ -289,11 +334,11 @@ mod foo {
 #[test]
 fn struct_mod_import() {
     let mut scope = Scope::new();
-    scope.new_module("foo")
+    scope
+        .new_module("foo")
         .import("bar", "Bar")
         .new_struct("Foo")
-        .field("bar", "Bar")
-        ;
+        .field("bar", "Bar");
 
     let expect = r#"
 mod foo {
