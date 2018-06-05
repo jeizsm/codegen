@@ -10,6 +10,16 @@ fn empty_scope() {
 }
 
 #[test]
+fn scope_with_function() {
+    let mut scope = Scope::new();
+    scope.new_fn("blah");
+    let expect = r#"
+fn blah() {
+}"#;
+    assert_eq!(scope.to_string(), &expect[1..]);
+}
+
+#[test]
 fn mod_annotation() {
     let mut scope = Scope::new();
 
