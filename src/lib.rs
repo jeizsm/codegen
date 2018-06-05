@@ -46,14 +46,22 @@ pub struct Scope {
     fns: Vec<Function>,
 }
 
+/// The types of items that can be defined.
 #[derive(Debug, Clone)]
-enum Item {
+pub enum Item {
+    /// Module
     Module(Module),
+    /// Struct
     Struct(Struct),
+    /// Trait
     Trait(Trait),
+    /// Enum
     Enum(Enum),
+    /// Impl
     Impl(Impl),
+    /// Function
     Function(Function),
+    /// Raw / freeform
     Raw(String),
 }
 
