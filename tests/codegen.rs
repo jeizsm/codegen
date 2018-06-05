@@ -10,6 +10,21 @@ fn empty_scope() {
 }
 
 #[test]
+fn mod_annotation() {
+    let mut scope = Scope::new();
+
+    {
+        scope.new_module("foo").annotation(vec!["cfg(test)"]);
+    }
+
+    let expect = r#"
+#[cfg(test)]
+mod foo {
+}"#;
+    assert_eq!(scope.to_string(), &expect[1..]);
+}
+
+#[test]
 fn single_struct() {
     let mut scope = Scope::new();
 

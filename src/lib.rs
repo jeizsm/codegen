@@ -65,6 +65,9 @@ pub struct Module {
     /// Module documentation
     docs: Option<Docs>,
 
+    /// Module annotation
+    annotation: Vec<String>,
+
     /// Contents of the module
     scope: Scope,
 }
@@ -465,6 +468,7 @@ impl Module {
             name: name.to_string(),
             vis: None,
             docs: None,
+            annotation: Vec::new(),
             scope: Scope::new(),
         }
     }
@@ -477,6 +481,12 @@ impl Module {
     /// Set the module visibility.
     pub fn vis(&mut self, vis: &str) -> &mut Self {
         self.vis = Some(vis.to_string());
+        self
+    }
+
+    /// Set module's annotations.
+    pub fn annotation(&mut self, annotation: Vec<&str>) -> &mut Self {
+        self.annotation = annotation.iter().map(|ann| ann.to_string()).collect();
         self
     }
 
@@ -537,6 +547,11 @@ impl Module {
     pub fn fmt(&self, fmt: &mut Formatter) -> fmt::Result {
         if let Some(ref vis) = self.vis {
             write!(fmt, "{} ", vis)?;
+        }
+        if !self.annotation.is_empty() {
+            for ann in &self.annotation {
+                write!(fmt, "#[{}]\n", ann)?;
+            }
         }
 
         write!(fmt, "mod {}", self.name)?;
