@@ -199,6 +199,9 @@ pub struct Function {
     /// Function documentation
     docs: Option<Docs>,
 
+    /// Function annotation
+    annotation: Vec<String>,
+
     /// Function visibility
     vis: Option<String>,
 
@@ -1426,6 +1429,7 @@ impl Function {
         Function {
             name: name.to_string(),
             docs: None,
+            annotation: vec![],
             vis: None,
             generics: vec![],
             arg_self: None,
@@ -1445,6 +1449,12 @@ impl Function {
     /// Set the function visibility.
     pub fn vis(&mut self, vis: &str) -> &mut Self {
         self.vis = Some(vis.to_string());
+        self
+    }
+
+    /// Set function's annotations.
+    pub fn annotation(&mut self, annotation: Vec<&str>) -> &mut Self {
+        self.annotation = annotation.iter().map(|ann| ann.to_string()).collect();
         self
     }
 
@@ -1535,6 +1545,12 @@ impl Function {
     pub fn fmt(&self, is_trait: bool, fmt: &mut Formatter) -> fmt::Result {
         if let Some(ref docs) = self.docs {
             docs.fmt(fmt)?;
+        }
+
+        if !self.annotation.is_empty() {
+            for ann in &self.annotation {
+                write!(fmt, "#[{}]\n", ann)?;
+            }
         }
 
         if is_trait {
