@@ -279,6 +279,11 @@ impl Scope {
         }
     }
 
+    /// The items in the scope.
+    pub fn items(&self) -> &Vec<Item> {
+        &self.items
+    }
+
     /// Import a type into the scope.
     ///
     /// This results in a new `use` statement bein added to the beginning of the
