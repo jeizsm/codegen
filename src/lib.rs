@@ -1202,6 +1202,12 @@ impl Field {
         self.annotation = annotation.iter().map(|ann| ann.to_string()).collect();
         self
     }
+
+    /// Get field's annotation.
+    pub fn get_annotation(&self) -> Vec<String> {
+        self.annotation.clone()
+    }
+
 }
 
 // ===== impl Fields =====
