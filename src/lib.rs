@@ -124,6 +124,9 @@ struct TypeDef {
     docs: Option<Docs>,
     derive: Vec<String>,
     bounds: Vec<Bound>,
+
+    /// TypeDef annotation
+    annotation: Vec<String>,
 }
 
 /// Defines an enum variant.
@@ -678,6 +681,12 @@ impl Struct {
         self
     }
 
+    /// Set struct annotations.
+    pub fn annotation(&mut self, annotation: Vec<&str>) -> &mut Self {
+        self.type_def.annotation = annotation.iter().map(|ann| ann.to_string()).collect();
+        self
+    }
+
     /// Formats the struct using the given formatter.
     pub fn fmt(&self, fmt: &mut Formatter) -> fmt::Result {
         self.type_def.fmt_head("struct", &[], fmt)?;
@@ -777,6 +786,13 @@ impl Trait {
         self
     }
 
+    /// Set trait annotations.
+    pub fn annotation(&mut self, annotation: Vec<&str>) -> &mut Self {
+        self.type_def.annotation = annotation.iter().map(|ann| ann.to_string()).collect();
+        self
+    }
+
+
     /// Formats the scope using the given formatter.
     pub fn fmt(&self, fmt: &mut Formatter) -> fmt::Result {
         self.type_def.fmt_head("trait", &self.parents, fmt)?;
@@ -871,6 +887,12 @@ impl Enum {
     /// Push a variant to the enum.
     pub fn push_variant(&mut self, item: Variant) -> &mut Self {
         self.variants.push(item);
+        self
+    }
+
+    /// Set enum annotations.
+    pub fn annotation(&mut self, annotation: Vec<&str>) -> &mut Self {
+        self.type_def.annotation = annotation.iter().map(|ann| ann.to_string()).collect();
         self
     }
 
@@ -1034,6 +1056,7 @@ impl TypeDef {
             docs: None,
             derive: vec![],
             bounds: vec![],
+            annotation: Vec::new(),
         }
     }
 
@@ -1065,6 +1088,12 @@ impl TypeDef {
         }
 
         self.fmt_derive(fmt)?;
+
+        if !self.annotation.is_empty() {
+            for ann in &self.annotation {
+                write!(fmt, "#[{}]\n", ann)?;
+            }
+        }
 
         if let Some(ref vis) = self.vis {
             write!(fmt, "{} ", vis)?;
@@ -1207,7 +1236,6 @@ impl Field {
     pub fn get_annotation(&self) -> Vec<String> {
         self.annotation.clone()
     }
-
 }
 
 // ===== impl Fields =====
