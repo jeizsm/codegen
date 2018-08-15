@@ -111,13 +111,13 @@ fn single_struct_documented_field() {
     struct_.push_field(field1);
 
     let mut field2 = Field::new("two", "usize");
-    field2.annotation(vec![r#"#[serde(rename = "bar")]"#]);
+    field2.annotation(vec![r#"serde(rename = "bar")"#]);
     struct_.push_field(field2);
 
     let mut field3 = Field::new("three", "usize");
     field3.doc(doc).annotation(vec![
-        r#"#[serde(skip_serializing)]"#,
-        r#"#[serde(skip_deserializing)]"#,
+        "serde(skip_serializing)",
+        "serde(skip_deserializing)",
     ]);
     struct_.push_field(field3);
 

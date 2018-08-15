@@ -1346,7 +1346,7 @@ impl Fields {
                         }
                         if !f.annotation.is_empty() {
                             for ann in &f.annotation {
-                                write!(fmt, "{}\n", ann)?;
+                                write!(fmt, "#[{}]\n", ann)?;
                             }
                         }
                         if let Some(ref vis) = f.vis {
