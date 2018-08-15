@@ -524,10 +524,21 @@ impl Module {
         self
     }
 
-    /// Set module's annotations.
+    /// Set module annotations.
     pub fn annotation(&mut self, annotation: Vec<&str>) -> &mut Self {
         self.annotation = annotation.iter().map(|ann| ann.to_string()).collect();
         self
+    }
+
+    /// Push module annotations.
+    pub fn push_annotation(&mut self, annotation: &str) -> &mut Self {
+        self.annotation.push(annotation.to_owned());
+        self
+    }
+
+    /// Get module annotations.
+    pub fn get_annotation(&self) -> Vec<String> {
+        self.annotation.clone()
     }
 
     /// Import a type into the module's scope.
@@ -687,6 +698,17 @@ impl Struct {
         self
     }
 
+    /// Push struct annotations.
+    pub fn push_annotation(&mut self, annotation: &str) -> &mut Self {
+        self.type_def.annotation.push(annotation.to_owned());
+        self
+    }
+
+    /// Get struct annotations.
+    pub fn get_annotation(&self) -> Vec<String> {
+        self.type_def.annotation.clone()
+    }
+
     /// Formats the struct using the given formatter.
     pub fn fmt(&self, fmt: &mut Formatter) -> fmt::Result {
         self.type_def.fmt_head("struct", &[], fmt)?;
@@ -792,6 +814,16 @@ impl Trait {
         self
     }
 
+    /// Push trait annotations.
+    pub fn push_annotation(&mut self, annotation: &str) -> &mut Self {
+        self.type_def.annotation.push(annotation.to_owned());
+        self
+    }
+
+    /// Get trait annotations.
+    pub fn get_annotation(&self) -> Vec<String> {
+        self.type_def.annotation.clone()
+    }
 
     /// Formats the scope using the given formatter.
     pub fn fmt(&self, fmt: &mut Formatter) -> fmt::Result {
@@ -894,6 +926,17 @@ impl Enum {
     pub fn annotation(&mut self, annotation: Vec<&str>) -> &mut Self {
         self.type_def.annotation = annotation.iter().map(|ann| ann.to_string()).collect();
         self
+    }
+
+    /// Push enum annotations.
+    pub fn push_annotation(&mut self, annotation: &str) -> &mut Self {
+        self.type_def.annotation.push(annotation.to_owned());
+        self
+    }
+
+    /// Get enum annotations.
+    pub fn get_annotation(&self) -> Vec<String> {
+        self.type_def.annotation.clone()
     }
 
     /// Formats the enum using the given formatter.
@@ -1226,13 +1269,19 @@ impl Field {
         self
     }
 
-    /// Set field's annotation.
+    /// Set field annotations.
     pub fn annotation(&mut self, annotation: Vec<&str>) -> &mut Self {
         self.annotation = annotation.iter().map(|ann| ann.to_string()).collect();
         self
     }
 
-    /// Get field's annotation.
+    /// Push field annotations.
+    pub fn push_annotation(&mut self, annotation: &str) -> &mut Self {
+        self.annotation.push(annotation.to_owned());
+        self
+    }
+
+    /// Get field annotations.
     pub fn get_annotation(&self) -> Vec<String> {
         self.annotation.clone()
     }
@@ -1504,10 +1553,21 @@ impl Function {
         self
     }
 
-    /// Set function's annotations.
+    /// Set function annotations.
     pub fn annotation(&mut self, annotation: Vec<&str>) -> &mut Self {
         self.annotation = annotation.iter().map(|ann| ann.to_string()).collect();
         self
+    }
+
+    /// Push function annotations.
+    pub fn push_annotation(&mut self, annotation: &str) -> &mut Self {
+        self.annotation.push(annotation.to_owned());
+        self
+    }
+
+    /// Get function annotations.
+    pub fn get_annotation(&self) -> Vec<String> {
+        self.annotation.clone()
     }
 
     /// Add a generic to the function.
